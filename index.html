@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Todo App</h1>
+        <div class="head">
+            <input type="text" placeholder="Add your new todo" id="inputTodo">
+            <button id="add" onclick="addNewTodo()">+</button>
+        </div>
+
+        <ul id="listTodo">
+
+        </ul>
+
+        <div class="foot">
+            <span id="countTodo">You have 0 pending task(s)</span>
+            <button onclick="done()">Done !</button>
+        </div>
+
+    </div>
+    <script>
+        // count pending tasks
+        function countPending() {
+            var todoList = document.querySelectorAll(".task");
+            var countTodo = document.getElementById("countTodo");
+
+            countTodo.innerHTML = "You have " + todoList.length + " pending task(s)";
+        }
+        countPending();
+    </script>
+
+    <script>
+        // Handle when click a todo
+        function tick(btn) {
+            btn.className = btn.className === "checked" ? "unchecked" : "checked";
+            var img = btn.querySelector("img");
+            img.style.display = btn.className === "checked" ? "" : "none";
+        }
+        //handle add a new task
+        function addNewTodo() {
+            //get elements
+            var inputTodo = document.querySelector("#inputTodo");
+            var todoList = document.querySelector("#listTodo");
+            //handle adding
+            if (inputTodo.value != "") {
+                todoList.innerHTML += taskContent(inputTodo.value);
+                inputTodo.value = "";
+                countPending();
+            } else {
+                inputTodo.style.animation = "vibrate 0.1s ease-in-out infinite";
+                setTimeout(() => {
+                    inputTodo.style.animation = "none";
+                }, 300);
+            }
+        }
+
+        function taskContent(content) {
+            if (content != "") {
+                return '<div class="task" ondblclick="dblTick(this)">' +
+                    '<li onclick="showFully(this)">' + content + '</li>' +
+                    '<button class="unchecked" onclick="tick(this)">' +
+                    '<img src="check.png" width="90%"style="display: none;"></button></div>';
+            }
+            return "";
+        }
+
+
+        function done() {
+            var listTodo = document.querySelectorAll(".task");
+            //clear inner HTML
+            document.querySelector("ul").innerHTML = "";
+            // find unchecked task and write to empty ul
+            listTodo.forEach(todo => {
+                if (todo.querySelector("button").className != "checked") {
+                    document.querySelector("ul").innerHTML += taskContent(todo.querySelector("li").innerHTML);
+                }
+            });
+            countPending();
+        }
+        //show full task text
+        function showFully(li) {
+            li.classList.toggle("showFully");
+        }
+
+        function dblTick(div) {
+            //get elements
+            var btn = div.querySelector("button");
+            var img = btn.querySelector("img");
+            //toggle check box
+            btn.className = btn.className === "checked" ? "unchecked" : "checked";
+            img.style.display = btn.className === "checked" ? "" : "none";
+        }
+    </script>
+</body>
+
+</html>
